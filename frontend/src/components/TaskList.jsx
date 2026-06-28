@@ -1,8 +1,9 @@
+import { useState, useEffect } from "react";
 import TaskItem from "./TaskItem";
 
 /**
  * TaskList Component
- * Displays a list of tasks and handles loading, error, and empty states.
+ * Displays a list of tasks and handles loading, error, empty states, and pagination.
  *
  * @param {Object} props - Component props.
  * @param {Array} props.tasks - List of tasks to display.
@@ -20,6 +21,19 @@ export default function TaskList({
   onDelete,
   onStatusChange,
 }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
+  // Calculate total pages needed
+  const totalPages = Math.ceil(tasks.length / itemsPerPage);
+
+  // Auto-adjust the page if items get deleted or filtered and the current page becomes empty
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [tasks.length, currentPage, totalPages]);
+
   // Show a loading message while tasks are being fetched.
   if (loading) {
     return <p className="loading">Loading...</p>;
@@ -35,17 +49,48 @@ export default function TaskList({
     return <p className="empty">No tasks found.</p>;
   }
 
+  // Slice the tasks array to get only the items for the current page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentTasks = tasks.slice(startIndex, startIndex + itemsPerPage);
+
   return (
-    <div>
-      {tasks.map((task) => (
-        <TaskItem
-          key={task.id}
-          task={task}
-          onUpdate={onUpdate}
-          onDelete={onDelete}
-          onStatusChange={onStatusChange}
-        />
-      ))}
+    <div className="task-list-container">
+      <div className="task-items">
+        {currentTasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+            onStatusChange={onStatusChange}
+          />
+        ))}
+      </div>
+
+      {/* Pagination Controls - Only show if there is more than 1 page */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -11,7 +11,7 @@ body {
 }
 
 .container {
-  width: min(1000px, 90%);
+  width: min(1200px, 95%);
   margin: 40px auto;
 }
 
@@ -74,22 +74,20 @@ button[type="button"] {
   color: white;
 }
 
-.task-card button:first-child {
-  background: #f59e0b;
-  color: white;
-}
-
-.task-card button:last-child {
-  background: #dc2626;
-  color: white;
+/* --- Task Grid Layout --- */
+.task-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .task-card {
   background: white;
   border-radius: 12px;
   padding: 20px;
-  margin-bottom: 20px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
 .task-card h3 {
@@ -105,22 +103,36 @@ button[type="button"] {
   margin: 15px 0;
 }
 
+/* Push buttons to the bottom of the card */
 .task-card div:last-child {
   display: flex;
   gap: 10px;
+  margin-top: auto; 
+}
+
+.task-card button {
+  flex: 1;
+  margin-right: 0;
+}
+
+.task-card button:first-child {
+  background: #f59e0b;
+  color: white;
+}
+
+.task-card button:last-child {
+  background: #dc2626;
+  color: white;
 }
 
 .task-card strong {
   color: #2563eb;
 }
 
-/* Search */
-
+/* --- Search & Filter --- */
 input[type="text"] {
   margin-bottom: 15px;
 }
-
-/* Filter Buttons */
 
 .filter-tabs {
   display: flex;
@@ -141,38 +153,55 @@ input[type="text"] {
   border: none;
 }
 
-/* Error */
+/* --- Pagination (No Inline Styles) --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 30px;
+  padding-bottom: 20px;
+}
 
+.pagination button {
+  background: #e5e7eb;
+  color: #374151;
+  margin: 0;
+  font-weight: 500;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: bold;
+  color: #555;
+}
+
+/* --- States --- */
 .error {
   color: red;
   margin-top: 10px;
 }
 
-/* Empty */
-
-.empty {
+.empty, .loading {
   text-align: center;
-  padding: 30px;
+  padding: 40px;
   background: white;
   border-radius: 10px;
+  grid-column: 1 / -1; /* Spans full width of grid */
 }
 
-/* Loading */
-
-.loading {
-  text-align: center;
-  padding: 30px;
-}
-
-/* Responsive */
-
+/* --- Responsive --- */
 @media (max-width: 768px) {
   .container {
     width: 95%;
   }
 
-  .task-card div:last-child {
-    flex-direction: column;
+  .task-items {
+    grid-template-columns: 1fr; /* Stacks cards on mobile */
   }
 
   button {
