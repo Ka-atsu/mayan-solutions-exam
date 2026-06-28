@@ -13,8 +13,25 @@ export function useTasks() {
   async function loadTasks() {
     try {
       setLoading(true);
-      const data = await api.getTasks(search, statusFilter);
-      setTasks(data);
+      // Fetch everything (or fetch with filters if your backend supports them)
+      const data = await api.getTasks(search, "all");
+
+      // Apply Client-Side Filtering
+      let filteredData = data;
+
+      if (statusFilter === "active") {
+        // Active = Pending OR In Progress
+        filteredData = data.filter(
+          (t) => t.status_name === "pending" || t.status_name === "in_progress",
+        );
+      } else if (statusFilter === "inactive") {
+        // Inactive = Completed
+        filteredData = data.filter((t) => t.status_name === "completed");
+      } else if (statusFilter !== "all") {
+        filteredData = data.filter((t) => t.status_name === statusFilter);
+      }
+
+      setTasks(filteredData);
       setError("");
     } catch (err) {
       setError(err.message);
@@ -22,6 +39,10 @@ export function useTasks() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    loadTasks();
+  }, [search, statusFilter]);
 
   // Automatically reload tasks whenever the search text or status filter changes
   useEffect(() => {

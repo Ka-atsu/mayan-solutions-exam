@@ -1,9 +1,8 @@
 // List of available status filters.
 const STATUS_OPTIONS = [
   { label: "All", value: "all" },
-  { label: "Pending", value: "pending" },
-  { label: "In Progress", value: "in_progress" },
-  { label: "Completed", value: "completed" },
+  { label: "Active", value: "active" }, // Includes Pending & In Progress
+  { label: "Inactive", value: "inactive" }, // Includes Completed
 ];
 
 /**
