@@ -1,8 +1,6 @@
 import * as taskService from "../services/tasks.service.js";
 
-/*
-    GET /api/tasks
-*/
+// Handle GET requests to fetch all tasks (filters by search text or status)
 export async function getTasks(req, res, next) {
   try {
     const { search = "", status = "all" } = req.query;
@@ -11,13 +9,11 @@ export async function getTasks(req, res, next) {
 
     res.status(200).json(tasks);
   } catch (error) {
-    next(error);
+    next(error); // Pass any errors to the central error handler
   }
 }
 
-/*
-    GET /api/tasks/:id
-*/
+// Handle GET requests to find a single task using its ID
 export async function getTask(req, res, next) {
   try {
     const { id } = req.params;
@@ -36,9 +32,7 @@ export async function getTask(req, res, next) {
   }
 }
 
-/*
-    POST /api/tasks
-*/
+// Handle POST requests to create a new task
 export async function createTask(req, res, next) {
   try {
     const task = await taskService.createTask(req.body);
@@ -49,9 +43,7 @@ export async function createTask(req, res, next) {
   }
 }
 
-/*
-    PUT /api/tasks/:id
-*/
+// Handle PUT requests to change a task's title or description
 export async function updateTask(req, res, next) {
   try {
     const { id } = req.params;
@@ -70,9 +62,7 @@ export async function updateTask(req, res, next) {
   }
 }
 
-/*
-    PATCH /api/tasks/:id/status
-*/
+// Handle PATCH requests to change only a task's status name
 export async function updateTaskStatus(req, res, next) {
   try {
     const { id } = req.params;
@@ -92,9 +82,7 @@ export async function updateTaskStatus(req, res, next) {
   }
 }
 
-/*
-    DELETE /api/tasks/:id
-*/
+// Handle DELETE requests to remove a task permanently
 export async function deleteTask(req, res, next) {
   try {
     const { id } = req.params;

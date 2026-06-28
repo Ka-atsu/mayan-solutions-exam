@@ -1,11 +1,9 @@
 import { supabase } from "../config/supabaseClient.js";
 
-/*
-    GET ALL TASKS
-*/
+// Get all tasks (supports title search and status filtering)
 export async function getAllTasks(search = "", status = "all") {
   let query = supabase
-    .from("task_details")
+    .from("task_details") // Uses a database view to get status names
     .select("*")
     .order("created_at", { ascending: false });
 
@@ -18,15 +16,11 @@ export async function getAllTasks(search = "", status = "all") {
   }
 
   const { data, error } = await query;
-
   if (error) throw error;
-
   return data;
 }
 
-/*
-    GET TASK BY ID
-*/
+// Get a single task by its ID
 export async function getTaskById(id) {
   const { data, error } = await supabase
     .from("task_details")
@@ -35,33 +29,24 @@ export async function getTaskById(id) {
     .single();
 
   if (error) throw error;
-
   return data;
 }
 
-/*
-    CREATE TASK
-*/
+// Create a new task (automatically defaults to 'pending' status)
 export async function createTask(task) {
   const { title, description } = task;
 
   const { data, error } = await supabase
     .from("tasks")
-    .insert({
-      title,
-      description,
-    })
+    .insert({ title, description })
     .select()
     .single();
 
   if (error) throw error;
-
   return data;
 }
 
-/*
-    UPDATE TASK
-*/
+// Update a task's title and description
 export async function updateTask(id, task) {
   const updateData = {
     ...task,
@@ -76,15 +61,12 @@ export async function updateTask(id, task) {
     .single();
 
   if (error) throw error;
-
   return data;
 }
 
-/*
-    UPDATE STATUS
-*/
+// Change a task's status using its name (e.g., 'completed')
 export async function updateTaskStatus(id, statusName) {
-  // Find status id
+  // 1. Find the ID for the given status name
   const { data: status, error: statusError } = await supabase
     .from("statuses")
     .select("id")
@@ -93,6 +75,7 @@ export async function updateTaskStatus(id, statusName) {
 
   if (statusError) throw new Error("Invalid status.");
 
+  // 2. Update the task with the new status ID
   const { data, error } = await supabase
     .from("tasks")
     .update({
@@ -104,17 +87,13 @@ export async function updateTaskStatus(id, statusName) {
     .single();
 
   if (error) throw error;
-
   return data;
 }
 
-/*
-    DELETE TASK
-*/
+// Delete a task permanently by its ID
 export async function deleteTask(id) {
   const { error } = await supabase.from("tasks").delete().eq("id", id);
 
   if (error) throw error;
-
   return true;
 }

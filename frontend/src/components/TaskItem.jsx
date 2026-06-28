@@ -1,11 +1,23 @@
 import { useState } from "react";
 import TaskForm from "./TaskForm";
 
+// Available task statuses.
 const STATUS_OPTIONS = ["pending", "in_progress", "completed"];
 
+/**
+ * TaskItem Component
+ * Displays a task and lets users edit, delete, or update its status.
+ *
+ * @param {Object} props - Component props.
+ * @param {Object} props.task - The task to display.
+ * @param {(id: number, data: Object) => void} props.onUpdate - Updates a task.
+ * @param {(id: number) => void} props.onDelete - Deletes a task.
+ * @param {(id: number, status: string) => void} props.onStatusChange - Updates the task status.
+ */
 export default function TaskItem({ task, onUpdate, onDelete, onStatusChange }) {
   const [editing, setEditing] = useState(false);
 
+  // Show the edit form when editing is enabled.
   if (editing) {
     return (
       <TaskForm

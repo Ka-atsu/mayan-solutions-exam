@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
 
+/**
+ * TaskForm Component
+ * Used to create or edit a task.
+ *
+ * @param {Object} props - Component props.
+ * @param {(task: Object) => void} props.onSubmit - Runs when the form is submitted.
+ * @param {Object|null} props.initialData - Task data when editing.
+ * @param {() => void} props.onCancel - Runs when editing is canceled.
+ */
 export default function TaskForm({ onSubmit, initialData = null, onCancel }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
 
+  // Fill the form when editing an existing task.
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title);
@@ -15,6 +25,7 @@ export default function TaskForm({ onSubmit, initialData = null, onCancel }) {
   function handleSubmit(e) {
     e.preventDefault();
 
+    // Require a task title before submitting.
     if (!title.trim()) {
       setError("Task title is required.");
       return;
@@ -27,7 +38,7 @@ export default function TaskForm({ onSubmit, initialData = null, onCancel }) {
       description: description.trim(),
     });
 
-    // Clear form after creating a task
+    // Clear the form after adding a new task.
     if (!initialData) {
       setTitle("");
       setDescription("");
